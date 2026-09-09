@@ -32,12 +32,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TipCalculatorApp() {
-    // Переменные для хранения того, что вводит пользователь
     var orderAmount by remember { mutableStateOf("") }
     var dishesCount by remember { mutableStateOf("") }
+    var tipPercentage by remember { mutableFloatStateOf(0f) } // Состояние слайдера
 
     Column(modifier = Modifier.padding(16.dp)) {
-        // Поле: Сумма заказа
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -51,7 +50,6 @@ fun TipCalculatorApp() {
             )
         }
 
-        // Поле: Количество блюд
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -63,6 +61,22 @@ fun TipCalculatorApp() {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+
+        // Блок: Чаевые
+        Text("Чаевые:", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+        ) {
+            Text("0")
+            Slider(
+                value = tipPercentage,
+                onValueChange = { tipPercentage = it },
+                valueRange = 0f..25f, // Диапазон от 0 до 25
+                modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+            )
+            Text("25")
         }
     }
 }
