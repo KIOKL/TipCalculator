@@ -3,6 +3,7 @@ package com.example.tipcalculator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -17,10 +18,14 @@ import com.example.tipcalculator.ui.theme.TipCalculatorTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Включаем полноэкранный режим, но дальше Scaffold всё компенсирует
+        enableEdgeToEdge()
         setContent {
             TipCalculatorTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    TipCalculatorApp()
+                // Используем Scaffold, чтобы он высчитал отступы от камеры
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    // Передаем эти безопасные отступы (innerPadding) в наше приложение
+                    TipCalculatorApp(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -28,12 +33,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TipCalculatorApp() {
+fun TipCalculatorApp(modifier: Modifier = Modifier) {
     var orderAmount by remember { mutableStateOf("") }
     var dishesCount by remember { mutableStateOf("") }
     var tipPercentage by remember { mutableFloatStateOf(0f) }
 
-    // ЛОГИКА: Вычисляем текущую скидку на основе введенного количества блюд
+    // ЛОГИКА: Вычисляем текущую скидку
     val count = dishesCount.toIntOrNull() ?: 0
     val activeDiscount = when {
         count in 1..2 -> 3
@@ -43,7 +48,8 @@ fun TipCalculatorApp() {
         else -> 0
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    // Применяем отступы сверху (от камеры) + наши 16.dp по краям
+    Column(modifier = modifier.padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 16.dp)) {
             Text("Сумма заказа:", modifier = Modifier.width(140.dp), fontSize = 16.sp)
             OutlinedTextField(
@@ -74,8 +80,8 @@ fun TipCalculatorApp() {
             discounts.forEach { percent ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(end = 8.dp)) {
                     RadioButton(
-                        selected = (activeDiscount == percent), // Выделяется автоматически из логики
-                        onClick = null // Пользователь кликнуть не может
+                        selected = (activeDiscount == percent),
+                        onClick = null
                     )
                     Text("$percent%")
                 }
