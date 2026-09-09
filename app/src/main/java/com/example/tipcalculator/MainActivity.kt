@@ -57,7 +57,6 @@ fun TipCalculatorApp() {
             Text("25")
         }
 
-        // Блок: Скидка (Отрисовка)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Скидка:", fontSize = 16.sp, modifier = Modifier.padding(end = 16.dp))
 
@@ -65,8 +64,8 @@ fun TipCalculatorApp() {
             discounts.forEach { percent ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(end = 8.dp)) {
                     RadioButton(
-                        selected = false, // Пока ничего не выбрано
-                        onClick = { /* Пока ничего не делает */ }
+                        selected = false,
+                        onClick = null // Запрещаем пользователю нажимать (только программно)
                     )
                     Text("$percent%")
                 }
