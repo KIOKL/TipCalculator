@@ -33,6 +33,16 @@ fun TipCalculatorApp() {
     var dishesCount by remember { mutableStateOf("") }
     var tipPercentage by remember { mutableFloatStateOf(0f) }
 
+    // ЛОГИКА: Вычисляем текущую скидку на основе введенного количества блюд
+    val count = dishesCount.toIntOrNull() ?: 0
+    val activeDiscount = when {
+        count in 1..2 -> 3
+        count in 3..5 -> 5
+        count in 6..10 -> 7
+        count > 10 -> 10
+        else -> 0
+    }
+
     Column(modifier = Modifier.padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 16.dp)) {
             Text("Сумма заказа:", modifier = Modifier.width(140.dp), fontSize = 16.sp)
@@ -64,8 +74,8 @@ fun TipCalculatorApp() {
             discounts.forEach { percent ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(end = 8.dp)) {
                     RadioButton(
-                        selected = false,
-                        onClick = null // Запрещаем пользователю нажимать (только программно)
+                        selected = (activeDiscount == percent), // Выделяется автоматически из логики
+                        onClick = null // Пользователь кликнуть не может
                     )
                     Text("$percent%")
                 }
